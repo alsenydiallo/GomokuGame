@@ -45,16 +45,13 @@ public class GoMoku extends JPanel {
       menuBar = menuContent();
       window.setJMenuBar(menuBar);
       
-
-      
       GoMoku content = new GoMoku();
       window.setContentPane(content);
       
       // background image
-      //imagePanel = new JPanel();
-      //imagePanel.setLayout(new FlowLayout());
-      imageLabel = new JLabel(new ImageIcon("wac-red-logo.png"));
-      //imagePanel.add(imageLabel);
+      imageLabel = new JLabel(new ImageIcon(""));
+	  imageLabel.setBounds(0, 0, 620,460);
+	  imageLabel.setIcon(new ImageIcon("Autumn_meadow_scene_near_Woodlawn,_Virginia.png"));
       window.add(imageLabel);
       
       window.pack();
@@ -72,12 +69,13 @@ public class GoMoku extends JPanel {
    private JButton undoMove; // allow to go back one move
    
 	private static void initializeImageArray(){
-		images = new ArrayList<String>(5);
-		images.add("Autumn_meadow_scene_near_Woodlawn,_Virginia.png");
+		images = new ArrayList<String>();
 		images.add("beautiful-nature-china.png");
-		images.add("Canadian-Nature.png");
 		images.add("nature_again___psd__by_sspace7-d5rkmd5.png");
 		images.add("wallpaper-retro-summer-march-nature-68189.png");
+		images.add("nature-background-images-17.png");
+		images.add("wallpaper-nature-best-pixelcriminal-dream-41297.png");
+		images.add("Autumn_meadow_scene_near_Woodlawn,_Virginia.png");
 	}
  
    private static JMenuBar menuContent(){	
@@ -103,35 +101,27 @@ public class GoMoku extends JPanel {
     */
    public GoMoku() {
       
-      setLayout(null);  // I will do the layout myself.
-      
+      setLayout(null);     
       setPreferredSize( new Dimension(620,460) );
       
-      //setBackground(new Color(0,150,0));  // Dark green background.
-      
       /* Create the components and add them to the panel. */
-      
       Board board = new Board();  // Note: The constructor for the board also creates the buttons and label.
       add(board);
       add(newGameButton);
       add(resignButton);
       add(message);
       add(undoMove);
-
-      
+     
       /* Set the position and size of each component by calling
-         its setBounds() method. */
-      
+         its setBounds() method. */    
       board.setBounds(30,30,300,300); // Note:  size MUST be 172-by-172 !
       newGameButton.setBounds(10, 400, 120, 30);
       resignButton.setBounds(150, 400, 120, 30);
       undoMove.setBounds(290, 400, 120, 30);
-      message.setBounds(20, 350, 350, 30);
+      message.setBounds(20, 350, 500, 30);
    }
    
-   
-   // ----------------------- Nested class -----------------------------------
-   
+   // ----------------------- Nested class ----------------------------------- 
    /**
     * This panel displays a 168-by-168 pixel checkerboard pattern with
     * a 2-pixel black border.  It is assumed that the size of the
@@ -141,18 +131,18 @@ public class GoMoku extends JPanel {
     * columns of squares.
     */
    class Board extends JPanel implements ActionListener, MouseListener {
-      
+      int prvRow, prvCol;
       int[][] board;   // The data for the board is kept here.  The values
                       //   in this array are chosen from the following constants.
       
       static final int EMPTY = 0,       // Represents an empty square.
-                       WHITE = 1,       // A white piece.
+                       RED = 1,       // A RED piece.
                        BLACK = 2;       // A black piece.
       
       boolean gameInProgress; // Is a game currently in progress?
       
       int currentPlayer;      // Whose turn is it now?  The possible values
-                              // are WHITE and BLACK.  (This is valid only while a game is in progress.)
+                              // are RED and BLACK.  (This is valid only while a game is in progress.)
 
       int win_r1, win_c1, win_r2, win_c2;  // When a player wins by getting five or more
                                            // pieces in a row, the squares at the
@@ -177,13 +167,15 @@ public class GoMoku extends JPanel {
          
          resignButton = new JButton("Resign");
          resignButton.addActionListener(this);
+        
          newGameButton = new JButton("New Game");
          newGameButton.addActionListener(this);
          
          undoMove = new JButton("Undo Move");
+         undoMove.addActionListener(this);
          
          message = new JLabel("");
-         message.setFont(new  Font("Serif", Font.BOLD, 14));
+         message.setFont(new  Font("Serif", Font.BOLD, 20));
          message.setForeground(Color.BLACK);
          board = new int[13][13];
          doNewGame();
@@ -198,6 +190,8 @@ public class GoMoku extends JPanel {
             doNewGame();
          else if (src == resignButton)
             doResign();
+         else if(src == undoMove)
+        	doUndoMove();
       }
       
       /**
@@ -230,18 +224,27 @@ public class GoMoku extends JPanel {
        * opponent wins.
        */
       void doResign() {
-         if (gameInProgress == false) {
-                // This should not be possible.
+         if (gameInProgress == false) {// This should not be possible.
             message.setText("There is no game in progress!");
             return;
          }
-         if (currentPlayer == WHITE)
-            message.setText("WHITE player resigned from the game.  BLACK wins.");
+         if (currentPlayer == RED)
+            message.setText("RED player resigned from the game.  BLACK wins.");
          else
-            message.setText("BLACK player resigned from the game.  WHITE wins.");
+            message.setText("BLACK player resigned from the game.  RED wins.");
          newGameButton.setEnabled(true);
          resignButton.setEnabled(false);
          gameInProgress = false;
+      }
+      
+      /**
+       * this function allow to go back one move
+       * @param row
+       * @param col
+       */
+      void doUndoMove(){
+    	  board[prvRow][prvCol] = EMPTY;
+    	  repaint();
       }
             
       /**
@@ -264,13 +267,12 @@ public class GoMoku extends JPanel {
       void doClickSquare(int row, int col) {
          
          /* Check that the user clicked an empty square.  If not, show an
-          error message and exit. */
-         
+          error message and exit. */        
          if ( board[row][col] != EMPTY ) {
             if (currentPlayer == BLACK)
                message.setText("BLACK:  Please click on an empty square.");
             else
-               message.setText("WHITE:  Please click on an empty square.");
+               message.setText("RED:  Please click on an empty square.");
             return;
          }
          
@@ -282,8 +284,8 @@ public class GoMoku extends JPanel {
          repaint();
          
          if (winner(row,col)) {  // First, check for a winner.
-            if (currentPlayer == WHITE)
-               gameOver("WHITE player wins the game!");
+            if (currentPlayer == RED)
+               gameOver("RED player wins the game!");
             else
                gameOver("BLACK player wins the game!");
             return;
@@ -301,8 +303,8 @@ public class GoMoku extends JPanel {
          
          /* Continue the game.  It's the other player's turn. */         
          if (currentPlayer == BLACK) {
-            currentPlayer = WHITE;
-            message.setText("WHITE player:  Make your move.");
+            currentPlayer = RED;
+            message.setText("RED player:  Make your move.");
          }
          else {  
             currentPlayer = BLACK;
@@ -357,8 +359,7 @@ public class GoMoku extends JPanel {
        */
       private int count(int player, int row, int col, int dirX, int dirY) {
          
-         int ct = 1;  // Number of pieces in a row belonging to the player.
-         
+         int ct = 1;  // Number of pieces in a row belonging to the player.     
          int r, c;    // A row and column to be examined
          
          r = row + dirX;  // Look at square in specified direction.
@@ -398,7 +399,7 @@ public class GoMoku extends JPanel {
        */
       public void paintComponent(Graphics g) {
          
-         super.paintComponent(g); // Fill with background color, lightGray
+         super.paintComponent(g); 
          
          /* Draw a two-pixel black border around the edges of the canvas,
           and draw grid lines in darkGray.  */        
@@ -426,14 +427,14 @@ public class GoMoku extends JPanel {
            
       /**
        * Draw a piece in the square at (row,col).  The color is specified
-       * by the piece parameter, which should be either BLACK or WHITE.
+       * by the piece parameter, which should be either BLACK or RED.
        */
       private void drawPiece(Graphics g, int piece, int row, int col) {
-         if (piece == WHITE)
-            g.setColor(Color.WHITE);
+         if (piece == RED)
+            g.setColor(Color.RED);
          else
             g.setColor(Color.BLACK);
-         g.fillOval(23*col,23*row, 20, 20);
+         g.fillOval(2+23*col,2+23*row, 20, 20);
       }
            
       /**
@@ -461,8 +462,11 @@ public class GoMoku extends JPanel {
          if (gameInProgress == false)
             message.setText("Click \"New Game\" to start a new game.");
          else {
-            int col = (evt.getX() - 2) / 24;
-            int row = (evt.getY() - 2) / 24;
+            int col = (evt.getX() - 2) / 23;
+            int row = (evt.getY() - 2) / 23;
+            prvRow = col;
+            prvCol = row;
+            //save the most current move
             if (col >= 0 && col < 13 && row >= 0 && row < 13)
                doClickSquare(row,col);
          }
@@ -484,8 +488,7 @@ class MenuAction extends GoMoku implements ActionListener{
 	        	 window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
 	         }
 	         else if (src == change_image)
-	         	{
-	        	 	
+	         	{	        	 	
 	         		imageLabel.setLayout( new BorderLayout() );
 	    			imageLabel.setBounds(0, 0, 620,460);
 	    			imageLabel.setIcon(new ImageIcon(images.get(count)));
