@@ -30,11 +30,19 @@ public class GoMoku extends JPanel {
 	protected static JMenuItem change_image;
 	protected static ArrayList<String> images;
 	protected static JLabel imageLabel;
+<<<<<<< HEAD
 	protected int count = 0;
 
 	protected static JLabel boardImage;
 	protected static JFrame window;
 	protected static Board board;
+=======
+	protected static JPanel imagePanel;
+	protected int count = 0;
+
+
+	protected static JFrame window;
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 
 	public static void main(String[] args) {
 		initializeImageArray();
@@ -52,7 +60,10 @@ public class GoMoku extends JPanel {
 		imageLabel = new JLabel(new ImageIcon(""));
 		imageLabel.setBounds(0, 0, 620,460);
 		imageLabel.setIcon(new ImageIcon("Autumn_meadow_scene_near_Woodlawn,_Virginia.png"));
+<<<<<<< HEAD
 		boardImage.setIcon(new ImageIcon("Autumn_meadow_scene_near_Woodlawn,_Virginia.png"));
+=======
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 		window.add(imageLabel);
 
 		window.pack();
@@ -106,8 +117,12 @@ public class GoMoku extends JPanel {
 		setPreferredSize( new Dimension(620,460) );
 
 		/* Create the components and add them to the panel. */
+<<<<<<< HEAD
 		board = new Board();  // Note: The constructor for the board also creates the buttons and label.
 		board.add(boardImage);
+=======
+		Board board = new Board();  // Note: The constructor for the board also creates the buttons and label.
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 		add(board);
 		add(newGameButton);
 		add(resignButton);
@@ -116,7 +131,11 @@ public class GoMoku extends JPanel {
 
 		/* Set the position and size of each component by calling
          its setBounds() method. */    
+<<<<<<< HEAD
 		board.setBounds(30,30,300,300);
+=======
+		board.setBounds(30,30,300,300); // Note:  size MUST be 172-by-172 !
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 		newGameButton.setBounds(10, 400, 120, 30);
 		resignButton.setBounds(150, 400, 120, 30);
 		undoMove.setBounds(290, 400, 120, 30);
@@ -162,9 +181,13 @@ public class GoMoku extends JPanel {
 		 * start the first game.
 		 */
 		public Board() {
+<<<<<<< HEAD
 			boardImage = new JLabel();
 			//setBackground(new Color (1,1,0));
 			//setBackground(new Color (Color.BITMASK));
+=======
+			setBackground(null);
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 			addMouseListener(this);
 
 			menu = new JMenu("Menu");
@@ -207,7 +230,10 @@ public class GoMoku extends JPanel {
 				// This should not be possible because New Game button
 				// is enabled only when it is legal to use it, but it doesn't 
 				// hurt to check.
+<<<<<<< HEAD
 				JOptionPane.showMessageDialog(window, "Finish the current game first!");
+=======
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 				message.setText("Finish the current game first!");
 				return;
 			}
@@ -230,6 +256,7 @@ public class GoMoku extends JPanel {
 		 */
 		void doResign() {
 			if (gameInProgress == false) {// This should not be possible.
+<<<<<<< HEAD
 				JOptionPane.showMessageDialog(window, "There is no game in progress!");
 				message.setText("There is no game in progress!");
 				return;
@@ -242,6 +269,15 @@ public class GoMoku extends JPanel {
 				JOptionPane.showMessageDialog(window, "BLACK player resigned from the game.  RED wins.");
 				message.setText("BLACK player resigned from the game.  RED wins.");
 			}
+=======
+				message.setText("There is no game in progress!");
+				return;
+			}
+			if (currentPlayer == RED)
+				message.setText("RED player resigned from the game.  BLACK wins.");
+			else
+				message.setText("BLACK player resigned from the game.  RED wins.");
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 			newGameButton.setEnabled(true);
 			resignButton.setEnabled(false);
 			gameInProgress = false;
@@ -253,12 +289,17 @@ public class GoMoku extends JPanel {
 		 * @param col
 		 */
 		void doUndoMove(){
+<<<<<<< HEAD
 			if(gameInProgress == true){
 				board[prvRow][prvCol] = EMPTY;
 				repaint();
 			}
 			else
 				JOptionPane.showMessageDialog(window, "There is no game in progress!");
+=======
+			board[prvRow][prvCol] = EMPTY;
+			repaint();
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 		}
 
 		/**
@@ -414,12 +455,16 @@ public class GoMoku extends JPanel {
 		public void paintComponent(Graphics g) {
 
 			super.paintComponent(g); 
+<<<<<<< HEAD
 			
 			//set Background of the grid to transparent
 		        Graphics2D g2d = (Graphics2D) g;
 		        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
 		        
+=======
+
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 			/* Draw a two-pixel black border around the edges of the canvas,
           and draw grid lines in darkGray.  */        
 			g.setColor(Color.DARK_GRAY);
@@ -463,7 +508,11 @@ public class GoMoku extends JPanel {
 		 * The values of the variables are set in the count() method.
 		 */
 		private void drawWinLine(Graphics g) {
+<<<<<<< HEAD
 			g.setColor(Color.GREEN);
+=======
+			g.setColor(Color.RED);
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 			g.drawLine( 8 + 23*win_c1, 8 + 23*win_r1, 8 + 23*win_c2, 8 + 23*win_r2 );
 			if (win_r1 == win_r2)
 				g.drawLine( 8 + 23*win_c1, 7 + 23*win_r1, 8 + 23*win_c2, 7 + 23*win_r2 );
@@ -483,9 +532,14 @@ public class GoMoku extends JPanel {
 			else {
 				int col = (evt.getX() - 2) / 23;
 				int row = (evt.getY() - 2) / 23;
+<<<<<<< HEAD
 				
 				prvRow = row;
 				prvCol = col;
+=======
+				prvRow = col;
+				prvCol = row;
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 				//save the most current move
 				if (col >= 0 && col < 13 && row >= 0 && row < 13)
 					doClickSquare(row,col);
@@ -505,6 +559,7 @@ class MenuAction extends GoMoku implements ActionListener{
 		Object src = e.getSource();
 
 		if (src == quit){
+<<<<<<< HEAD
 			JOptionPane.showMessageDialog(window, "Exiting game ...");
 			System.out.printf("Exiting game .......");
 			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
@@ -526,5 +581,20 @@ class MenuAction extends GoMoku implements ActionListener{
 				count++;
 			System.out.printf("changing backround image to arrayList[%d], image:%s\n", count, images.get(count));
 		}
+=======
+			window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
+		}
+		else if (src == change_image)
+		{	        	 	
+			imageLabel.setLayout( new BorderLayout() );
+			imageLabel.setBounds(0, 0, 620,460);
+			imageLabel.setIcon(new ImageIcon(images.get(count)));
+			if(count >= images.size()-1)
+				count = 0;
+			else
+				count++;
+			System.out.printf("changing backround image to arrayList[%d], image:%s\n", count, images.get(count));
+		}
+>>>>>>> f586589be43cd04191c35bacfffeb3a903bd2794
 	}
 }
